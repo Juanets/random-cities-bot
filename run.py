@@ -1,12 +1,12 @@
 import time
 import schedule
 from twitter import TwitterAPI
-from google_images import Google, ImageManager, Scrapy
+from images import Google, ImageManager, Crawler
 
 def go():
-	
+
 	# get random city
-	city = Scrapy().get_random_city()
+	city = Crawler().get_random_city()
 
 	# get 4 images (urls)
 	urls = Google().search(city)
@@ -15,8 +15,8 @@ def go():
 	image_names = ImageManager().save(urls)
 
 	# tweet 'em
-	TwitterAPI().compose(city, image_names):
-	
+	TwitterAPI().compose(city, image_names)
+
 	# clean image directory
 	ImageManager().delete()
 

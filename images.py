@@ -1,22 +1,39 @@
 import os
 import time
 import shutil
+import random
 import requests
 from config import *
-from bs4 import BeautifulSoup
+from geopy.geocoders import Nominatim
 from googleapiclient.discovery import build
 
-class Crawler():
-    """Using requests and bs4 to get a random location from randomlists.com."""
-    def get_random_city(self):
-        try:
-            r = requests.get('https://www.randomlists.com/random-location')
-            soup = BeautifulSoup(r.content, 'html.parser')
-            city = soup.find('span', class_='subtle').get_text()
-            print(city)
-            return city
-        except Exception as e:
-            print(e)
+class Geo():
+    """Generate random coordinates and use geopy to get the address."""
+    def __init__(self):
+        self.geolocator = Nominatim()
+
+    def coordinates(self):
+        lat = random.uniform(0, 90)
+        lon = random.uniform(0, 180)
+        coord = '{lat}, {lon}'.format(lat=lat, lon=lon)
+        return coord
+
+    def get_location(self):
+        coordinates = self.coordinates()
+        address = self.geolocator.reverse(coordinates).raw['address']
+        country = address['country']
+
+        if 'city' in address:
+            city = address['city']
+        elif 'city_district' in address:
+            city = address['city_district']
+        elif 'county' in address:
+            city = address['county']
+        elif 'state_district' in address:
+            city = address['state_district']
+
+        location = '{city}, {country}'.format(city=city, country=country)
+        return location
 
 
 class Google():

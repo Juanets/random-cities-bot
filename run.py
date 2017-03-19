@@ -1,12 +1,12 @@
 import time
 import schedule
 from twitter import TwitterAPI
-from images import Google, ImageManager, Crawler
+from images import Google, ImageManager, Geo
 
 def go():
 
 	# get random city
-	city = Crawler().get_random_city()
+	city = Geo().get_location()
 
 	# get 4 images (urls)
 	urls = Google().search(city)

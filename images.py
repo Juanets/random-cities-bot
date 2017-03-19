@@ -28,7 +28,6 @@ class Geo():
 
         address = geo.raw['address']
         country = address['country']
-        city = None
 
         if 'city' in address:
             city = address['city']
@@ -38,9 +37,14 @@ class Geo():
             city = address['county']
         elif 'state_district' in address:
             city = address['state_district']
+        else:
+            city = None
 
-        location = '{city}, {country}'.format(city=city, country=country)
-        return location
+        if city is None:
+            return country
+        else:
+            location = '{city}, {country}'.format(city=city, country=country)
+            return location
 
 
 class Google():

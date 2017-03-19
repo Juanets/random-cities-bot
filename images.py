@@ -20,8 +20,15 @@ class Geo():
 
     def get_location(self):
         coordinates = self.coordinates()
-        address = self.geolocator.reverse(coordinates).raw['address']
+        geo = self.geolocator.reverse(coordinates)
+
+        # activate recursion if coordinates land on unknown territory
+        if geo.address is None:
+            return self.get_location()
+
+        address = geo.raw['address']
         country = address['country']
+        city = None
 
         if 'city' in address:
             city = address['city']

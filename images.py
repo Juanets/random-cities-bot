@@ -20,7 +20,7 @@ class Geo():
 
     def get_location(self):
         coordinates = self.coordinates()
-        geo = self.geolocator.reverse(coordinates)
+        geo = self.geolocator.reverse(coordinates, language='en')
 
         # activate recursion if coordinates land on unknown territory
         if geo.address is None:

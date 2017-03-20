@@ -13,39 +13,43 @@ class Geo():
         self.geolocator = Nominatim()
 
     def coordinates(self):
+        print('Generating coordinates...')
         lat = random.uniform(0, 90)
         lon = random.uniform(0, 180)
         coord = '{lat}, {lon}'.format(lat=lat, lon=lon)
         return coord
 
     def get_location(self):
-        coordinates = self.coordinates()
-        geo = self.geolocator.reverse(coordinates, language='en')
+        try:
+            coordinates = self.coordinates()
+            print('Deciphering coordinates...')
+            geo = self.geolocator.reverse(coordinates, language='en')
 
-        # activate recursion if coordinates land on unknown territory
-        if geo.address is None:
-            return self.get_location()
+            # activate recursion if coordinates land on unknown territory
+            if geo.address is None:
+                return self.get_location()
 
-        address = geo.raw['address']
-        country = address['country']
+            address = geo.raw['address']
+            country = address['country']
 
-        if 'city' in address:
-            city = address['city']
-        elif 'city_district' in address:
-            city = address['city_district']
-        elif 'county' in address:
-            city = address['county']
-        elif 'state_district' in address:
-            city = address['state_district']
-        else:
-            city = None
+            if 'city' in address:
+                city = address['city']
+            elif 'city_district' in address:
+                city = address['city_district']
+            elif 'county' in address:
+                city = address['county']
+            elif 'state_district' in address:
+                city = address['state_district']
+            else:
+                city = None
 
-        if city is None:
-            return country
-        else:
-            location = '{city}, {country}'.format(city=city, country=country)
-            return location
-
+            if city is None:
+                return country
+            else:
+                location = '{city}, {country}'.format(city=city, country=country)
+                return location
+        except Exception as e:
+            print(e)
 
 class Google():
     """Using a Google Custom Search Engine (CSE) that returns four (4) images."""
@@ -54,6 +58,7 @@ class Google():
 
     def search(self, place):
         try:
+            print('Searching images...')
             results = self.service.cse().list(
                 q=place,
                 num=num,
@@ -74,13 +79,13 @@ class ImageManager():
     """Using requests to download the four images obtained from the CSE
     and save them to ./images; and delete them with self.delete().
     """
-
     def __init__(self):
         self.path = 'images/'
         self.default_image_name = 'images/{}.jpg'
 
     def save(self, urls):
         image_names = []
+        print('Saving images...')
         for url in urls:
             try:
                 name = self.rename()
@@ -94,12 +99,13 @@ class ImageManager():
         return image_names
 
     def delete(self):
-        for image in os.listdir(self.path):
-            image_path = os.path.join(self.path, image)
-            try:
+        try:
+            print('Cleaning image directory...')
+            for image in os.listdir(self.path):
+                image_path = os.path.join(self.path, image)
                 os.unlink(image_path)
-            except Exception as e:
-                print(e)
+        except Exception as e:
+            print(e)
 
     def rename(self):
         time.sleep(1)

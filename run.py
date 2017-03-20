@@ -20,6 +20,9 @@ def go():
 	# clean image directory
 	ImageManager().delete()
 
+	# done
+	print('Done.')
+
 # run every 2 hours
 schedule.every(2).hours.do(go)
 
